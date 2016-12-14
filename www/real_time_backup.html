@@ -1,0 +1,248 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Real-Time Monitor</title>
+      <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/real_time.css">
+    <style type="text/css">
+${demo.css}
+    </style>
+
+<script src="js/microgear.js"></script>
+
+<script type="text/javascript">
+
+var temp,temp_int;
+var humid,humid_int;
+var light,light_int;
+
+$(function () {
+    
+    $(document).ready(function () {
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+
+        $('#container').highcharts({
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg, // don't animate in old IE
+                marginRight: 10,
+                events: {
+                     load: function () {
+
+                        // set up the updating of the chart each second
+                        var series = this.series[0];
+                        setInterval(function () {
+                            var x = (new Date()).getTime(); // current time
+                                y = temp_int;
+                            series.addPoint([x, y], true, true);
+                        }, 3500);
+                        var series1 = this.series[1];
+                        setInterval(function () {
+                            var x1 = (new Date()).getTime(); // current time
+                                y1 = humid_int;
+                            series1.addPoint([x1, y1], true, true);
+                        }, 3500);
+                        var series2 = this.series[2];
+                        setInterval(function () {
+                            var x2 = (new Date()).getTime(); // current time
+                                y2 = light_int;
+                            series2.addPoint([x2, y2], true, true);
+                        }, 3500);
+                    }
+                }
+            },
+            title: {
+                text: 'Data'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' +
+                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            series: [{
+                name: 'Temp',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+
+                    for (i = -5; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: 0
+                        });
+                    }
+                    //document.getElementById("data_2").innerHTML=data;
+                    return data;
+                }())
+            },
+            {
+                name: 'Humid',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+
+                    for (i = -5; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: 0
+                        });
+                    }
+                    //document.getElementById("data_2").innerHTML=data;
+                    return data;
+                }())
+            },
+            {
+                name: 'Light',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+
+                    for (i = -5; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: 0
+                        });
+                    }
+                    //document.getElementById("data_2").innerHTML=data;
+                    return data;
+                }())
+            }]
+        });
+    });
+});
+
+//###############################################################//
+//###############################################################//
+//###############################################################//
+//###############################################################//
+//###############################################################//
+
+  const APPID     = "Nextgenfarm";
+  const APPKEY    = "J1kh7QpPHkh3Kem";
+  const APPSECRET = "lQDioakQyfU3KOwrEhwokXI5y";
+
+
+         
+    var microgear = Microgear.create({
+        key: APPKEY,
+        secret: APPSECRET,
+        //alias : "myhtml"         /*  optional  */
+    });
+   
+    microgear.on('message',function(topic,msg) {
+
+        document.getElementById("data").innerHTML = msg;
+        var split_msg = msg.split(",");
+        
+        temp = split_msg[0];
+        temp_int = parseFloat(temp);
+        humid =split_msg[1];
+        humid_int = parseFloat(humid);
+        light = split_msg[2]
+        light_int = parseFloat(light);
+        document.getElementById("data_2").innerHTML = light_int;
+  
+    });
+
+    microgear.on('connected', function() {
+        microgear.setname('manual_control');    /* alias can be renamed anytime with this function */
+        document.getElementById("data").innerHTML="connected with netpie";
+    });
+
+    microgear.on('present', function(event) {
+        console.log(event);
+    });
+
+    microgear.on('absent', function(event) {
+        console.log(event);
+    });
+
+    microgear.connect(APPID);
+
+</script>
+</head>
+<body>
+<!-- Sidenav (hidden by default) -->
+<nav class="w3-sidenav w3-card-2 w3-top w3-small w3-animate-left" style="display:none;z-index:3;width:25%;min-width:100px" id="mySidenav">
+  <a href="javascript:void(0)" onclick="w3_close()"
+  class="w3-closenav">Close</a>
+  <a href="index.html" onclick="w3_close()">INDEX</a>
+  <a href="graph_index.html" onclick="w3_close()">Graph</a>
+  <a href="control_index.html" onclick="w3_close()">Control</a>
+  <a href="contact_index.html" onclick="w3_close()">Contact</a>
+</nav>
+
+<!-- Top menu -->
+<div class="w3-top">
+  <div class=" w3-xlarge " style="max-width:1200px;margin:auto">
+    <div class="w3-opennav w3-left w3-hover-text-black " onclick="w3_open()">☰</div>
+
+  </div>
+</div>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+<div class="bgimg-1 w3-display-container w3-opacity-max">
+
+  <div class="w3-display-middle" style="white-space:nowrap;">
+    <span class="w3-center w3-padding-xlarge w3-black w3-xlarge w3-wide w3-animate-opacity w3-animate-fading">REAL-TIME</span><br>
+
+  </div>
+
+</div>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="data" class="w3-center w3-animate-fading"></div>
+<div id="data_2">____</div>
+
+<script>
+// Script to open and close sidenav
+function w3_open() {
+    document.getElementById("mySidenav").style.display = "block";
+}
+ 
+function w3_close() {
+    document.getElementById("mySidenav").style.display = "none";
+}
+</script>
+  </body>
+</html>

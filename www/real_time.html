@@ -1,0 +1,149 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Real-Time Monitor</title>
+      <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/real_time.css">
+    <style type="text/css">
+${demo.css}
+    </style>
+
+<script src="js/microgear.js"></script>
+
+<script>
+  const APPID     = "Nextgenfarm";
+  const APPKEY    = "SQcVvFssnEGjYn1";
+  const APPSECRET = "vBDtCCUbYzRWli8BaoOoZR0tP";
+    var microgear = Microgear.create({
+        key: APPKEY,
+        secret: APPSECRET,
+        
+    });
+
+  microgear.on('message',function(topic,msg){
+    var split_msg = msg.split(",");
+    if(split_msg[4]=="Nextgenfarm"){
+      document.getElementById("temp_1").innerHTML = parseInt(split_msg[0]);
+      document.getElementById("humid_1").innerHTML = parseInt(split_msg[1]);
+      document.getElementById("soil_1").innerHTML = split_msg[2];
+      document.getElementById("light_1").innerHTML = split_msg[3];
+    }
+    else if(split_msg[4]=="Nextgenfarm2"){
+      document.getElementById("temp_2").innerHTML = parseInt(split_msg[0]);
+      document.getElementById("humid_2").innerHTML = parseInt(split_msg[1]);
+      document.getElementById("soil_2").innerHTML = split_msg[2];
+      document.getElementById("light_2").innerHTML = split_msg[3];
+    }
+    else
+    {
+      document.getElementById("data_3").innerHTML = "ERROR";
+    }
+  });
+   
+   
+    microgear.on('connected', function() {
+        microgear.setname('real_time'); 
+        microgear.subscribe("/node11");
+        microgear.subscribe("/node12");
+           /* alias can be renamed anytime with this function */
+        document.getElementById("data").innerHTML = "connected with NETPIE";
+        setInterval(function() {
+            microgear.chat("Back_end_py","Connected with RASP-PI");
+        },5000);
+    });
+    microgear.on('present', function(event) {
+        console.log(event);
+    });
+    microgear.on('absent', function(event) {
+        console.log(event);
+    });
+    //microgear.useTLS(false);
+    microgear.connect(APPID);
+    
+</script>
+</head>
+<body>
+<!-- Sidenav (hidden by default) -->
+<nav class="w3-sidenav w3-card-2 w3-top w3-small w3-animate-left" style="display:none;z-index:3;width:25%;min-width:100px" id="mySidenav">
+  <a href="javascript:void(0)" onclick="w3_close()"
+  class="w3-closenav">Close</a>
+  <a href="index.html" onclick="w3_close()">INDEX</a>
+  <a href="graph_index.html" onclick="w3_close()">Graph</a>
+  <a href="control_index.html" onclick="w3_close()">Control</a>
+  <a href="contact_index.html" onclick="w3_close()">Contact</a>
+</nav>
+
+<!-- Top menu -->
+<div class="w3-top">
+  <div class=" w3-xlarge " style="max-width:1200px;margin:auto">
+    <div class="w3-opennav w3-left w3-hover-text-black " onclick="w3_open()">☰</div>
+
+  </div>
+</div>
+
+
+<div class="bgimg-1 w3-display-container w3-opacity-max">
+
+  <div class="w3-display-middle" style="white-space:nowrap;">
+    <span class="w3-center w3-padding-xlarge w3-black w3-xlarge w3-wide w3-animate-opacity w3-animate-fading">REAL-TIME</span><br>
+
+  </div>
+
+</div>
+
+
+
+<div id="manual_control_panel" class="w3-row w3-center w3-grey w3-padding-16 w3-center">
+    
+    <table style="width:100%">
+  <tr>
+    <th></th>
+    <th>Greenhouse 1</th> 
+    <th>Greenhouse 2</th>
+  </tr>
+  <tr>
+    <td>Temperature</td>
+    <td id="temp_1"></td>
+    <td id="temp_2"></td>
+  </tr>
+  <tr>
+    <td>Humidity</td>
+    <td id="humid_1"></td>
+    <td id="humid_2"></td>
+  </tr>
+  <tr>
+    <td>Soil Moisture</td>
+    <td id="soil_1"></td>
+    <td id="soil_2"></td>
+  </tr>
+  <tr>
+    <td>Light Intensity</td>
+    <td id="light_1"></td>
+    <td id="light_2"></td>
+  </tr>
+</table>
+
+</div>
+
+<div id="data" class="w3-center w3-animate-fading">___</div>
+
+
+<script>
+// Script to open and close sidenav
+function w3_open() {
+    document.getElementById("mySidenav").style.display = "block";
+}
+ 
+function w3_close() {
+    document.getElementById("mySidenav").style.display = "none";
+}
+</script>
+  </body>
+</html>

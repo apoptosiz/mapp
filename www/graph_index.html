@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Monitor INDEX</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/graph_index.css">
+  <script type="text/javascript">
+
+    $("#ext-link").on("click"), function() {
+    if (typeof navigator !== "undefined" && navigator.app) {
+        // Mobile device.
+        navigator.app.loadUrl('http://www.google.com/', {openExternal: true});
+    } else {
+        // Possible web browser
+        window.open("http://www.google.com/", "_blank");
+    }
+});
+
+  </script>
+</head>
+
+<body>
+
+<nav class="w3-sidenav w3-card-2 w3-top w3-small w3-animate-left" style="display:none;z-index:3;width:25%;min-width:100px" id="mySidenav">
+  <a href="javascript:void(0)" onclick="w3_close()"
+  class="w3-closenav">Close</a>
+  <a href="index.html" onclick="w3_close()">INDEX</a>
+  <a href="graph_index.html" onclick="w3_close()">Graph</a>
+  <a href="control_index.html" onclick="w3_close()">Control</a>
+  <a href="contact_index.html" onclick="w3_close()">Contact</a>
+</nav>
+
+<!-- Top menu -->
+<div class="w3-top">
+  <div class=" w3-xlarge " style="max-width:1200px;margin:auto">
+    <div class="w3-opennav w3-left w3-hover-text-black " onclick="w3_open()">☰</div>
+
+  </div>
+</div>
+
+
+
+<!-- First Parallax Image with Logo Text -->
+<div class="bgimg-1 w3-display-container w3-opacity-max">
+
+  <div class="w3-display-middle" style="white-space:nowrap;">
+    <span class="w3-center w3-padding-xlarge w3-black w3-xlarge w3-wide w3-animate-opacity w3-animate-fading">MONITOR</span><br>
+
+  </div>
+
+</div>
+  <div class="w3-btn-group ">
+    <a href="real_time.html"><button class="w3-btn w3-center-align" style="width:50%">REALTIME</button></a>
+    <a id="ext-link" onclick="loadweb('http://192.168.1.27/graph_index.php', '_system', 'location=yes'); return false;"><button class="w3-btn w3-teal w3-center-align" style="width:50%">SELECTED-TIME</button></a>
+	
+  </div>
+
+
+
+
+<script>
+// Script to open and close sidenav
+function w3_open() {
+    document.getElementById("mySidenav").style.display = "block";
+}
+ 
+function w3_close() {
+    document.getElementById("mySidenav").style.display = "none";
+}
+function loadweb(url) {
+    Ref = window.open(url, '_blank', 'location=yes,EnableViewPortScale=yes');
+    Ref.addEventListener('loadstart', LoadStart);
+    Ref.addEventListener('loadstop', LoadStop);
+    Ref.removeEventListener('loaderror', LoadError);
+    Ref.addEventListener('exit', Close);
+    return false;
+}
+</script>
+
+</body>
+</html>

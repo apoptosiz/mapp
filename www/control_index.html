@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Control Index</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/manual_control.css">
+  <script src="js/microgear.js"></script>
+</head>
+
+<body>
+
+
+<script>
+  const APPID     = "Nextgenfarm";
+  const APPKEY    = "SQcVvFssnEGjYn1";
+  const APPSECRET = "vBDtCCUbYzRWli8BaoOoZR0tP";
+
+    var microgear = Microgear.create({
+        key: APPKEY,
+        secret: APPSECRET,
+        //alias : "myhtml"         /*  optional  */
+    });
+    function Light_on(){
+            microgear.publish("/manual_control","Light_ON");
+    }
+    function Light_off(){
+            microgear.publish("/manual_control","Light_OFF");
+    }
+    function Fan_on(){
+            microgear.publish("/manual_control","Fan_ON");
+    }
+    function Fan_off(){
+            microgear.publish("/manual_control","Fan_OFF");
+    }
+    function Water_on(){
+            microgear.publish("/manual_control","Water_ON");
+    }
+    function Water_off(){
+            microgear.publish("/manual_control","Water_OFF");
+    }
+    function Mist_on(){
+            microgear.publish("/manual_control","Mist_ON");
+    }
+    function Mist_off(){
+            microgear.publish("/manual_control","Mist_OFF");
+    }
+      function switchPress(){
+    if(document.getElementById("cube-switch").className == "cube-switch active"){
+            microgear.chat("python","ON");
+            microgear.publish("/order","ON");
+            document.getElementById("Light_off_button").disabled = true;
+            document.getElementById("Water_off_button").disabled = true;
+            document.getElementById("Mist_off_button").disabled = true;
+            document.getElementById("Fan_off_button").disabled = true;
+            document.getElementById("Light_on_button").disabled = true;
+            document.getElementById("Water_on_button").disabled = true;
+            document.getElementById("Mist_on_button").disabled = true;
+            document.getElementById("Fan_on_button").disabled = true;
+    }else if(document.getElementById("cube-switch").className == "cube-switch"){
+            microgear.chat("python","OFF");
+            microgear.publish("/order","OFF");
+            document.getElementById("Light_off_button").disabled = false;
+            document.getElementById("Water_off_button").disabled = false;
+            document.getElementById("Mist_off_button").disabled = false;
+            document.getElementById("Fan_off_button").disabled = false;
+            document.getElementById("Light_on_button").disabled = false;
+            document.getElementById("Water_on_button").disabled = false;
+            document.getElementById("Mist_on_button").disabled = false;
+            document.getElementById("Fan_on_button").disabled = false;
+
+
+    }
+  }
+  microgear.on('message', function(topic,data) {
+    if(data=="OFF"){
+      document.getElementById("cube-switch").className = "cube-switch active";
+    }else if(data=="ON"){
+      document.getElementById("cube-switch").className = "cube-switch";
+    }
+  });
+
+    microgear.on('connected', function() {
+        microgear.setname('MApplication');    /* alias can be renamed anytime with this function */
+        document.getElementById("data").innerHTML= "Now connected with netpie";
+        document.getElementById("cube-switch").className = "cube-switch active";
+        document.getElementById("cube-switch").style.display = "block";
+        setInterval(function() {
+            microgear.chat("Back_end_py","Hello from myself ");
+        },5000);
+    });
+
+    microgear.on('present', function(event) {
+        console.log(event);
+    });
+
+    microgear.on('absent', function(event) {
+        console.log(event);
+    });
+
+    microgear.connect(APPID);</script>
+
+<div class="bgimg-1 w3-display-container w3-opacity-max">
+
+  <div class="w3-display-middle" style="white-space:nowrap;">
+    
+
+  </div>
+
+</div>
+  <!-- CONTENT -->
+ 
+  <div class="w3-content w3-container w3-padding-64 w3-center">
+      
+
+  
+<center>
+<span class="w3-center w3-padding-large w3-black w3-wide w3-animate-opacity w3-animate-fading">MANUAL CONTROL</span><br><br><br><br>
+  <div>AUTOCONTROL</div>
+  <div href="" class="cube-switch" id="cube-switch" onclick="switchPress()">
+    <span class="switch">
+      <span class="switch-state off">ON</span>
+      <span class="switch-state on">OFF</span>
+    </span>
+  </div>
+</center>
+</div>
+
+<div id="manual_control_panel" class="w3-row w3-center w3-grey w3-padding-16">
+  <div class="w3-quarter w3-section">
+    <span class="w3-xlarge">Light<span class="glyphicon glyphicon-grain"></span></span><br>
+      <button id="Light_on_button" class="button w3-btn w3-center-align w3-red w3-round" type="button" onclick="Light_on()">ON</button>
+      <button id="Light_off_button" class="button_off w3-btn w3-center-align w3-round" type="button" onclick="Light_off()">OFF</button><br>
+  </div>
+  <div class="w3-quarter w3-section">
+    <span class="w3-xlarge">Fan<span class="glyphicon glyphicon-asterisk"></span></span><br>
+      <button id="Fan_on_button" class="button w3-btn w3-center-align w3-red w3-round" type="button" onclick="Fan_on()" >ON</button>
+      <button id="Fan_off_button" class="button_off w3-btn w3-center-align w3-round" type="button" onclick="Fan_off()">OFF</button>
+  </div>
+  <div class="w3-quarter w3-section">
+    <span class="w3-xlarge">Water<span class="glyphicon glyphicon-tint"></span></span><br>
+      <button id="Water_on_button" class="button w3-btn w3-center-align w3-red w3-round" type="button" onclick="Water_on()">ON</button>
+      <button id="Water_off_button" class="button_off w3-btn w3-center-align w3-round" type="button" onclick="Water_off()">OFF</button>
+  </div>
+  <div class="w3-quarter w3-section">
+    <span class="w3-xlarge">MIST<span class="glyphicon glyphicon-cloud"></span></span><br>
+      <button id="Mist_on_button" class="button w3-btn w3-center-align w3-red w3-round" type="button" onclick="Mist_on()">ON</button>
+      <button id="Mist_off_button" class="button_off w3-btn w3-center-align w3-round" type="button" onclick="Mist_off()">OFF</button>
+  </div>
+</div>
+  <div id="data" class="w3-animate-fading w3-center"></div>
+</body>
+</html>
